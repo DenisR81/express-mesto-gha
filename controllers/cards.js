@@ -5,15 +5,14 @@ module.exports.getCards = (req, res) => {
     .then((cards) => {
       res.send(cards);
     })
-    .catch((err) => res.status(500).send({ message: `Ошибка: ${err}` }));
+    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
 };
 
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-  const likes = [];
   Card.create({
-    name, link, owner, likes,
+    name, link, owner,
   })
     .then((card) => {
       res.status(201).send(card);
@@ -21,7 +20,7 @@ module.exports.createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({
-          message: 'Переданы некорректные данные',
+          message: 'Переданы некорректные данные  для создания карточки',
         });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -40,7 +39,7 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки' });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
       }
@@ -63,7 +62,7 @@ module.exports.likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({
-          message: 'Переданы некорректные данные',
+          message: 'Переданы некорректные данные для постановки "лайка" карточки',
         });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -87,7 +86,7 @@ module.exports.dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({
-          message: 'Переданы некорректные данные',
+          message: 'Переданы некорректные данные для "дизлайка" карточки',
         });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });

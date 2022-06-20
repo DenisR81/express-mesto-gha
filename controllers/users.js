@@ -3,7 +3,7 @@ const User = require('../models/user');
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
-    .catch((err) => res.status(500).send({ message: `Ошибка: ${err}` }));
+    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
 };
 
 module.exports.getUser = (req, res) => {
@@ -33,7 +33,7 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({
-          message: 'Переданы некорректные данные',
+          message: 'Переданы некорректные данные для создания пользователя',
         });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -58,7 +58,7 @@ module.exports.updateProfile = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({
-          message: 'Переданы некорректные данные',
+          message: 'Переданы некорректные данные для обновления информации о пользователе',
         });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
@@ -83,7 +83,7 @@ module.exports.updateAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({
-          message: 'Переданны некорректные данные',
+          message: 'Переданны некорректные данные для обновления аватарки пользователя',
         });
       } else {
         res.status(500).send({ message: 'Ошибка сервера' });
