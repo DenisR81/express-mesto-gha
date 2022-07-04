@@ -16,15 +16,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/users', users);
-app.use('/cards', cards);
-app.use(isAuth);
-app.use('/*', () => {
-  throw new ErrorNotFound('Путь не найден');
-});
-app.use(errors());
-app.use(handleError);
-
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -41,5 +32,12 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(6),
   }),
 }), createUser);
-
+app.use(isAuth);
+app.use('/users', users);
+app.use('/cards', cards);
+app.use('/*', () => {
+  throw new ErrorNotFound('Путь не найден');
+});
+app.use(errors());
+app.use(handleError);
 app.listen(PORT);
