@@ -6,6 +6,8 @@ const users = require('./routes/users');
 const cards = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const { isAuth } = require('./middlewares/auth');
+const handleError = require('./errors/handleError');
+const ErrorNotFound = require('./errors/ErrorNotFound');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -14,12 +16,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/users', isAuth, users);
-app.use('/cards', isAuth, cards);
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страницы не существует' });
+app.use('/users', users);
+app.use('/cards', cards);
+app.use(isAuth);
+app.use('/*', () => {
+  throw new ErrorNotFound('Путь не найден');
 });
 app.use(errors());
+app.use(handleError);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
